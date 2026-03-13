@@ -19,10 +19,16 @@ extension String {
         )
     }
 
-    /// Strips the trailing timestamp Google Sheets appends to date cells,
-    /// e.g. "Friday, March 15, 2026 0:00:00" → "Friday, March 15, 2026".
+    /// Strips the timestamp portion from date strings.
+    /// Handles ISO 8601 ("2026-03-15T03:28:27.568Z" → "2026-03-15") and
+    /// Sheets-style suffixes ("Friday, March 15, 2026 0:00:00" → "Friday, March 15, 2026").
     var strippingDateTimestamp: String {
-        replacingOccurrences(
+        // ISO 8601: split on T and take the date portion
+        if let tRange = range(of: "T") {
+            return String(self[startIndex..<tRange.lowerBound])
+        }
+        // Sheets-style: strip trailing " H:MM:SS"
+        return replacingOccurrences(
             of: #"\s+\d{1,2}:\d{2}(:\d{2})?(\s*(AM|PM))?\s*$"#,
             with: "",
             options: [.regularExpression, .caseInsensitive]

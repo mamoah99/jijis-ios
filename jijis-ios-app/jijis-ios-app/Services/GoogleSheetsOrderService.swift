@@ -42,13 +42,11 @@ struct GoogleSheetsOrderService: OrderServiceProtocol {
             throw ServiceError.decodingFailed(underlying: error)
         }
 
-        let data: Data
         let response: URLResponse
-
         do {
             // Google Apps Script returns a 302 to an echo URL that serves the response.
             // URLSession follows that redirect as a GET by default — exactly what we want.
-            (data, response) = try await URLSession.shared.data(for: urlRequest)
+            (_, response) = try await URLSession.shared.data(for: urlRequest)
         } catch {
             throw ServiceError.networkFailed(underlying: error)
         }

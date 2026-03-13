@@ -36,6 +36,7 @@ struct CustomerOrder: Decodable {
 
 extension CustomerOrder: Identifiable {
     var id: String { confirmationId }
+    var formattedPickupWindow: String { pickupWindow.strippingTimeSeconds }
 }
 
 extension CustomerOrder {

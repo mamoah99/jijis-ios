@@ -7,6 +7,19 @@
 
 import Foundation
 
+// MARK: - Time formatting helper
+
+extension String {
+    /// Strips trailing seconds from Sheets-formatted times, e.g. "10:00:00 AM" → "10:00 AM".
+    var strippingTimeSeconds: String {
+        replacingOccurrences(
+            of: #"(\d{1,2}:\d{2}):\d{2}"#,
+            with: "$1",
+            options: .regularExpression
+        )
+    }
+}
+
 /// A single pickup window returned by PickupService.
 /// id is a String so Codable is fully synthesised without a custom decoder.
 /// isSoldOut defaults to false so existing JSON without the key decodes safely.
@@ -30,6 +43,11 @@ struct PickupSlot: Identifiable, Hashable, Codable {
         self.timeWindow = timeWindow
         self.isSoldOut = isSoldOut
     }
+
+    /// `timeWindow` as received from the backend, with seconds stripped if present.
+    /// Google Sheets serialises times as "H:MM:SS AM/PM", e.g. "10:00:00 AM – 12:00:00 PM".
+    /// This property normalises that to "10:00 AM – 12:00 PM" for display.
+    var formattedTimeWindow: String { timeWindow.strippingTimeSeconds }
 
     init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)

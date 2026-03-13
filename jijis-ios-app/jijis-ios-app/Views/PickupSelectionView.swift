@@ -70,9 +70,9 @@ struct PickupSelectionView: View {
                             ForEach(viewModel.windows(for: date)) { slot in
                                 // TODO: Future — show remaining capacity (e.g. "2 spots left")
                                 if slot.isSoldOut {
-                                    SoldOutRow(label: slot.timeWindow)
+                                    SoldOutRow(label: slot.formattedTimeWindow)
                                 } else {
-                                    SelectionRow(label: slot.timeWindow, isSelected: selectedSlot == slot) {
+                                    SelectionRow(label: slot.formattedTimeWindow, isSelected: selectedSlot == slot) {
                                         selectedSlot = slot
                                     }
                                 }

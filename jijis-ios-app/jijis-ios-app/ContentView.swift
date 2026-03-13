@@ -36,20 +36,28 @@ struct ContentView: View {
                     Spacer()
 
                     // Brand header
-                    VStack(spacing: 6) {
-                        Text("Jiji's")
-                            .font(.system(size: 56, weight: .bold, design: .serif))
-                            .foregroundStyle(Color.brandHotPink)
+                    VStack(spacing: 12) {
+                        if let logoImage = UIImage(named: "logo") {
+                            Image(uiImage: logoImage)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 200)
+                        } else {
+                            VStack(spacing: 6) {
+                                Text("Jiji's")
+                                    .font(.system(size: 56, weight: .bold, design: .serif))
+                                    .foregroundStyle(Color.brandHotPink)
 
-                        Text("Patisserie")
-                            .font(.system(size: 40, weight: .light, design: .serif))
-                            .foregroundStyle(Color.brandDarkBrown)
+                                Text("Patisserie")
+                                    .font(.system(size: 40, weight: .light, design: .serif))
+                                    .foregroundStyle(Color.brandDarkBrown)
+                            }
+                        }
 
                         Text("· Salt Bread Drops ·")
                             .font(.caption)
                             .foregroundStyle(Color.brandDarkBrown.opacity(0.5))
                             .tracking(3)
-                            .padding(.top, 6)
                     }
 
                     Spacer()

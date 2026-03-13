@@ -119,7 +119,7 @@ private struct OrderCard: View {
             }
 
             HStack {
-                Label(order.pickupWindow, systemImage: "clock")
+                Label(order.formattedPickupWindow, systemImage: "clock")
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 Spacer()

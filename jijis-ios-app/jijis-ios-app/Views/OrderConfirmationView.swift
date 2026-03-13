@@ -37,7 +37,7 @@ struct OrderConfirmationView: View {
                 Text(confirmation.pickupDate)
                     .font(.subheadline).foregroundStyle(.secondary)
 
-                Text(confirmation.pickupWindow)
+                Text(confirmation.formattedPickupWindow)
                     .font(.subheadline).foregroundStyle(.secondary)
 
                 Text(String(format: "Total: $%.2f", confirmation.total))

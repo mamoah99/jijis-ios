@@ -21,6 +21,7 @@ struct MenuItemCard: View {
                     Image(uiImage: uiImage)
                         .resizable()
                         .aspectRatio(contentMode: .fill)
+                        .clipped()
                 } else {
                     Color.brandBlush.opacity(0.6)
                         .overlay {

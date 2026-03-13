@@ -32,9 +32,10 @@ struct MenuItemDetailView: View {
                             .onTapGesture { showingFullScreen = true }
                     }
                 }
-                .tabViewStyle(.page)
-                .frame(height: 300)
-                .clipShape(RoundedRectangle(cornerRadius: 16))
+                .tabViewStyle(.page(indexDisplayMode: .automatic))
+                .frame(height: 320)
+                .clipShape(RoundedRectangle(cornerRadius: 20))
+                .shadow(color: .black.opacity(0.10), radius: 12, x: 0, y: 4)
                 .padding(.horizontal)
                 .fullScreenCover(isPresented: $showingFullScreen) {
                     FullScreenImageViewer(
@@ -168,16 +169,21 @@ private struct CarouselImage: View {
                 Image(uiImage: uiImage)
                     .resizable()
                     .aspectRatio(contentMode: .fill)
-                    .clipped()
             } else {
                 Color.brandBlush.opacity(0.6)
                     .overlay {
-                        Image(systemName: "birthday.cake")
-                            .font(.system(size: 48))
-                            .foregroundStyle(Color.brandHotPink.opacity(0.5))
+                        VStack(spacing: 10) {
+                            Image(systemName: "birthday.cake")
+                                .font(.system(size: 52))
+                                .foregroundStyle(Color.brandHotPink.opacity(0.5))
+                            Text("Photo coming soon")
+                                .font(.caption)
+                                .foregroundStyle(Color.brandHotPink.opacity(0.5))
+                        }
                     }
             }
         }
+        .clipped()
     }
 }
 

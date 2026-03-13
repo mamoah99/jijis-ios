@@ -60,9 +60,7 @@ struct PickupSlot: Identifiable, Hashable, Codable {
         self.isSoldOut = isSoldOut
     }
 
-    /// `timeWindow` as received from the backend, with seconds stripped if present.
-    /// Google Sheets serialises times as "H:MM:SS AM/PM", e.g. "10:00:00 AM – 12:00:00 PM".
-    /// This property normalises that to "10:00 AM – 12:00 PM" for display.
+    /// `date` as received from the backend, with any trailing timestamp stripped.
     var formattedDate: String { date.strippingDateTimestamp }
     var formattedTimeWindow: String { timeWindow.strippingTimeSeconds }
 

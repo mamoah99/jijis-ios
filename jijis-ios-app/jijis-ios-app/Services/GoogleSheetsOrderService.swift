@@ -42,11 +42,6 @@ struct GoogleSheetsOrderService: OrderServiceProtocol {
             throw ServiceError.decodingFailed(underlying: error)
         }
 
-        print("[OrderService] → POST \(baseURL)")
-        if let body = urlRequest.httpBody {
-            print("[OrderService] Request body: \(String(data: body, encoding: .utf8) ?? "<binary>")")
-        }
-
         let data: Data
         let response: URLResponse
 
@@ -55,19 +50,12 @@ struct GoogleSheetsOrderService: OrderServiceProtocol {
             // URLSession follows that redirect as a GET by default — exactly what we want.
             (data, response) = try await URLSession.shared.data(for: urlRequest)
         } catch {
-            print("[OrderService] ✗ Network error: \(error)")
             throw ServiceError.networkFailed(underlying: error)
         }
 
-        if let http = response as? HTTPURLResponse {
-            print("[OrderService] ← status \(http.statusCode)")
-            if http.statusCode != 200 {
-                print("[OrderService] ✗ Non-200 body: \(String(data: data, encoding: .utf8) ?? "<binary>")")
-                throw ServiceError.invalidResponse(statusCode: http.statusCode)
-            }
+        if let http = response as? HTTPURLResponse, http.statusCode != 200 {
+            throw ServiceError.invalidResponse(statusCode: http.statusCode)
         }
-
-        print("[OrderService] Raw body: \(String(data: data, encoding: .utf8) ?? "<binary>")")
 
         // Construct the confirmation locally — no response body parsing needed.
         return OrderConfirmation(
@@ -104,4 +92,3 @@ private struct OrderPayload: Encodable {
         self.paymentMethod  = request.paymentMethod
     }
 }
-

@@ -26,32 +26,22 @@ struct GoogleSheetsMenuService: MenuServiceProtocol {
             throw ServiceError.invalidURL
         }
 
-        print("[MenuService] → GET \(url)")
-
         let data: Data
         let response: URLResponse
 
         do {
             (data, response) = try await URLSession.shared.data(from: url)
         } catch {
-            print("[MenuService] ✗ Network error: \(error)")
             throw ServiceError.networkFailed(underlying: error)
         }
 
-        if let http = response as? HTTPURLResponse {
-            print("[MenuService] ← status \(http.statusCode)")
-            if http.statusCode != 200 {
-                print("[MenuService] ✗ Non-200 body: \(String(data: data, encoding: .utf8) ?? "<binary>")")
-                throw ServiceError.invalidResponse(statusCode: http.statusCode)
-            }
+        if let http = response as? HTTPURLResponse, http.statusCode != 200 {
+            throw ServiceError.invalidResponse(statusCode: http.statusCode)
         }
-
-        print("[MenuService] Raw body: \(String(data: data, encoding: .utf8) ?? "<binary>")")
 
         do {
             return try JSONDecoder().decode([MenuItem].self, from: data)
         } catch {
-            print("[MenuService] ✗ Decoding error: \(error)")
             throw ServiceError.decodingFailed(underlying: error)
         }
     }

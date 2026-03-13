@@ -20,10 +20,11 @@ struct MockPickupService: PickupServiceProtocol {
         let dates = ["Friday, March 15", "Saturday, March 16", "Sunday, March 17"]
         let windows = ["10:00 AM – 12:00 PM", "12:00 PM – 2:00 PM", "2:00 PM – 4:00 PM"]
 
-        // Return a slot for every date × time window combination
+        // Return a slot for every date × time window combination.
+        // The first window on each date is marked sold out to exercise the UI in previews.
         return dates.flatMap { date in
-            windows.map { window in
-                PickupSlot(id: UUID().uuidString, date: date, timeWindow: window)
+            windows.enumerated().map { index, window in
+                PickupSlot(id: "\(date)-\(window)", date: date, timeWindow: window, isSoldOut: index == 0)
             }
         }
     }

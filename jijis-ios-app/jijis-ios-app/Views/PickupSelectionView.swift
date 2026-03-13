@@ -34,6 +34,14 @@ struct PickupSelectionView: View {
                         .foregroundStyle(.secondary)
                         .padding()
 
+                } else if viewModel.allSlotsSoldOut {
+                    Text("No pickup windows are currently available. Check back soon!")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                        .padding(.top, 40)
+                        .frame(maxWidth: .infinity)
+
                 } else {
 
                     // MARK: - Date selection
@@ -47,7 +55,6 @@ struct PickupSelectionView: View {
                                 selectedSlot = nil  // reset window when date changes
                             }
                         }
-                        // TODO: Future — show sold-out label on full pickup days
                     }
 
                     Divider()
@@ -59,8 +66,13 @@ struct PickupSelectionView: View {
 
                         if let date = selectedDate {
                             ForEach(viewModel.windows(for: date)) { slot in
-                                SelectionRow(label: slot.timeWindow, isSelected: selectedSlot == slot) {
-                                    selectedSlot = slot
+                                // TODO: Future — show remaining capacity (e.g. "2 spots left")
+                                if slot.isSoldOut {
+                                    SoldOutRow(label: slot.timeWindow)
+                                } else {
+                                    SelectionRow(label: slot.timeWindow, isSelected: selectedSlot == slot) {
+                                        selectedSlot = slot
+                                    }
                                 }
                             }
                         } else {
@@ -68,8 +80,6 @@ struct PickupSelectionView: View {
                                 .font(.subheadline)
                                 .foregroundStyle(.secondary)
                         }
-                        // TODO: Future — show remaining capacity per window
-                        // TODO: Future — disable sold-out windows
                     }
                 }
             }
@@ -128,6 +138,32 @@ private struct SelectionRow: View {
             .background(isSelected ? Color.brown.opacity(0.08) : Color(.systemGray6))
             .clipShape(RoundedRectangle(cornerRadius: 10))
         }
+    }
+}
+
+// MARK: - Sold-out row (non-interactive)
+
+private struct SoldOutRow: View {
+    let label: String
+
+    var body: some View {
+        HStack {
+            Text(label)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+            Spacer()
+            Text("Sold Out")
+                .font(.caption)
+                .fontWeight(.semibold)
+                .foregroundStyle(.white)
+                .padding(.horizontal, 8)
+                .padding(.vertical, 4)
+                .background(Color.secondary)
+                .clipShape(Capsule())
+        }
+        .padding()
+        .background(Color(.systemGray6).opacity(0.5))
+        .clipShape(RoundedRectangle(cornerRadius: 10))
     }
 }
 

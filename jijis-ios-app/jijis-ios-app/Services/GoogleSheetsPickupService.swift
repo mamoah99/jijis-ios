@@ -7,8 +7,8 @@
 
 import Foundation
 
-/// Fetches available pickup slots from the Google Sheets / Apps Script backend.
-/// The backend already filters out sold-out slots before responding.
+/// Fetches all pickup slots from the Google Sheets / Apps Script backend,
+/// including sold-out ones so the UI can display them as non-selectable.
 ///
 /// TODO: Future — replace with Supabase or dedicated API when backend matures
 /// TODO: Future — add real-time sold-out updates via polling or websockets
@@ -27,32 +27,22 @@ struct GoogleSheetsPickupService: PickupServiceProtocol {
             throw ServiceError.invalidURL
         }
 
-        print("[PickupService] → GET \(url)")
-
         let data: Data
         let response: URLResponse
 
         do {
             (data, response) = try await URLSession.shared.data(from: url)
         } catch {
-            print("[PickupService] ✗ Network error: \(error)")
             throw ServiceError.networkFailed(underlying: error)
         }
 
-        if let http = response as? HTTPURLResponse {
-            print("[PickupService] ← status \(http.statusCode)")
-            if http.statusCode != 200 {
-                print("[PickupService] ✗ Non-200 body: \(String(data: data, encoding: .utf8) ?? "<binary>")")
-                throw ServiceError.invalidResponse(statusCode: http.statusCode)
-            }
+        if let http = response as? HTTPURLResponse, http.statusCode != 200 {
+            throw ServiceError.invalidResponse(statusCode: http.statusCode)
         }
-
-        print("[PickupService] Raw body: \(String(data: data, encoding: .utf8) ?? "<binary>")")
 
         do {
             return try JSONDecoder().decode([PickupSlot].self, from: data)
         } catch {
-            print("[PickupService] ✗ Decoding error: \(error)")
             throw ServiceError.decodingFailed(underlying: error)
         }
     }

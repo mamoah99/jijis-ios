@@ -91,7 +91,7 @@ struct OrderReviewView: View {
 
             // MARK: - Pickup details
             Section("Pickup Details") {
-                LabeledContent("Date", value: slot.date)
+                LabeledContent("Date", value: slot.formattedDate)
                 LabeledContent("Window", value: slot.formattedTimeWindow)
                 // TODO: Future — allow editing pickup selection from here
                 // TODO: Future — show map / address for pickup location

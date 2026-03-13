@@ -113,7 +113,7 @@ private struct OrderCard: View {
                 .lineLimit(1)
 
             HStack {
-                Label(order.pickupDate, systemImage: "calendar")
+                Label(order.formattedPickupDate, systemImage: "calendar")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }

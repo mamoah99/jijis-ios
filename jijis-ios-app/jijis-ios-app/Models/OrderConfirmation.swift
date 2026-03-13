@@ -18,5 +18,6 @@ struct OrderConfirmation: Hashable, Decodable {
     let pickupWindow: String
     let total: Double
 
+    var formattedPickupDate: String { pickupDate.strippingDateTimestamp }
     var formattedPickupWindow: String { pickupWindow.strippingTimeSeconds }
 }

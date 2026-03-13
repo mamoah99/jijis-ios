@@ -51,7 +51,7 @@ struct PickupSelectionView: View {
                             .foregroundStyle(Color.brandDarkBrown)
 
                         ForEach(viewModel.availableDates, id: \.self) { date in
-                            SelectionRow(label: date, isSelected: selectedDate == date) {
+                            SelectionRow(label: date.strippingDateTimestamp, isSelected: selectedDate == date) {
                                 selectedDate = date
                                 selectedSlot = nil  // reset window when date changes
                             }

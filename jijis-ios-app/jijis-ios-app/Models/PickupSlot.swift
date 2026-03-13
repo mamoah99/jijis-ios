@@ -18,6 +18,16 @@ extension String {
             options: .regularExpression
         )
     }
+
+    /// Strips the trailing timestamp Google Sheets appends to date cells,
+    /// e.g. "Friday, March 15, 2026 0:00:00" → "Friday, March 15, 2026".
+    var strippingDateTimestamp: String {
+        replacingOccurrences(
+            of: #"\s+\d{1,2}:\d{2}(:\d{2})?(\s*(AM|PM))?\s*$"#,
+            with: "",
+            options: [.regularExpression, .caseInsensitive]
+        )
+    }
 }
 
 /// A single pickup window returned by PickupService.
@@ -47,6 +57,7 @@ struct PickupSlot: Identifiable, Hashable, Codable {
     /// `timeWindow` as received from the backend, with seconds stripped if present.
     /// Google Sheets serialises times as "H:MM:SS AM/PM", e.g. "10:00:00 AM – 12:00:00 PM".
     /// This property normalises that to "10:00 AM – 12:00 PM" for display.
+    var formattedDate: String { date.strippingDateTimestamp }
     var formattedTimeWindow: String { timeWindow.strippingTimeSeconds }
 
     init(from decoder: Decoder) throws {

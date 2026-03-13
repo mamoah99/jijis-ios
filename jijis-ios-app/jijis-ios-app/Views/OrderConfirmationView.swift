@@ -34,7 +34,7 @@ struct OrderConfirmationView: View {
                     .font(.headline)
                     .foregroundStyle(Color.brandDarkBrown)
 
-                Text(confirmation.pickupDate)
+                Text(confirmation.formattedPickupDate)
                     .font(.subheadline).foregroundStyle(.secondary)
 
                 Text(confirmation.formattedPickupWindow)

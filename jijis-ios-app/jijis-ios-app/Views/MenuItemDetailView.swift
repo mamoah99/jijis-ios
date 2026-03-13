@@ -210,9 +210,7 @@ private struct FullScreenImageViewer: View {
                 ForEach(imageNames.indices, id: \.self) { index in
                     Group {
                         if let uiImage = UIImage(named: imageNames[index]) {
-                            Image(uiImage: uiImage)
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
+                            ZoomableImagePage(uiImage: uiImage)
                         } else {
                             // TODO: Future — display real image with Image(imageNames[index])
                             Color(.systemGray4)
@@ -238,6 +236,72 @@ private struct FullScreenImageViewer: View {
                     .padding()
             }
         }
+    }
+}
+
+// MARK: - Zoomable image page
+
+/// A single full-screen image that supports pinch-to-zoom and double-tap to toggle zoom.
+/// Each page owns its own scale/offset state, so switching pages resets zoom automatically.
+private struct ZoomableImagePage: View {
+    let uiImage: UIImage
+
+    @State private var scale: CGFloat = 1
+    @State private var lastScale: CGFloat = 1
+    @State private var offset: CGSize = .zero
+    @State private var lastOffset: CGSize = .zero
+
+    var body: some View {
+        Image(uiImage: uiImage)
+            .resizable()
+            .aspectRatio(contentMode: .fit)
+            .scaleEffect(scale)
+            .offset(offset)
+            .gesture(pinchGesture.simultaneously(with: dragGesture))
+            .onTapGesture(count: 2) {
+                withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
+                    if scale > 1 {
+                        reset()
+                    } else {
+                        scale = 2.5
+                    }
+                }
+            }
+    }
+
+    private var pinchGesture: some Gesture {
+        MagnificationGesture()
+            .onChanged { value in
+                let delta = value / lastScale
+                lastScale = value
+                scale = min(max(scale * delta, 1), 4)
+            }
+            .onEnded { _ in
+                lastScale = 1
+                if scale < 1 {
+                    withAnimation(.spring()) { reset() }
+                }
+            }
+    }
+
+    private var dragGesture: some Gesture {
+        DragGesture()
+            .onChanged { value in
+                guard scale > 1 else { return }
+                offset = CGSize(
+                    width: lastOffset.width + value.translation.width,
+                    height: lastOffset.height + value.translation.height
+                )
+            }
+            .onEnded { _ in
+                lastOffset = offset
+            }
+    }
+
+    private func reset() {
+        scale = 1
+        offset = .zero
+        lastOffset = .zero
     }
 }
 

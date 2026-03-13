@@ -13,7 +13,7 @@ import Combine
 ///
 /// TODO: Future — move to a config file or environment variable
 private let googleSheetsBaseURL = URL(
-    string: "https://script.google.com/macros/s/AKfycbzQMsb3exe6NCYPhntvL1LP1AoGKvwBeJacCU7JbS8Zcv37d1ixN2Jjy12Ij8XEyB7uDQ/exec"
+    string: "https://script.google.com/macros/s/AKfycbxW-2BhXgPRjt3J8NFo2a5f5ZPvaQOmpVSAzpXRykg4g1idNiCVLvkF7GgN4TMSLfYbdA/exec"
 )!
 
 /// Holds all service dependencies for the app.

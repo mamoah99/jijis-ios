@@ -42,22 +42,32 @@ struct GoogleSheetsOrderService: OrderServiceProtocol {
             throw ServiceError.decodingFailed(underlying: error)
         }
 
+        print("[OrderService] → POST \(baseURL)")
+        if let body = urlRequest.httpBody {
+            print("[OrderService] Request body: \(String(data: body, encoding: .utf8) ?? "<binary>")")
+        }
+
+        let data: Data
         let response: URLResponse
 
         do {
-            // PostRedirectHandler re-issues the original POST (with body) to
-            // Google's redirect destination, preserving the HTTP method and body.
-            (_, response) = try await URLSession.shared.data(
-                for: urlRequest,
-                delegate: PostRedirectHandler()
-            )
+            // Google Apps Script returns a 302 to an echo URL that serves the response.
+            // URLSession follows that redirect as a GET by default — exactly what we want.
+            (data, response) = try await URLSession.shared.data(for: urlRequest)
         } catch {
+            print("[OrderService] ✗ Network error: \(error)")
             throw ServiceError.networkFailed(underlying: error)
         }
 
-        if let http = response as? HTTPURLResponse, http.statusCode != 200 {
-            throw ServiceError.invalidResponse(statusCode: http.statusCode)
+        if let http = response as? HTTPURLResponse {
+            print("[OrderService] ← status \(http.statusCode)")
+            if http.statusCode != 200 {
+                print("[OrderService] ✗ Non-200 body: \(String(data: data, encoding: .utf8) ?? "<binary>")")
+                throw ServiceError.invalidResponse(statusCode: http.statusCode)
+            }
         }
+
+        print("[OrderService] Raw body: \(String(data: data, encoding: .utf8) ?? "<binary>")")
 
         // Construct the confirmation locally — no response body parsing needed.
         return OrderConfirmation(
@@ -95,23 +105,3 @@ private struct OrderPayload: Encodable {
     }
 }
 
-// MARK: - Redirect handler
-
-/// Re-issues the original POST request (including body) to the redirect
-/// destination instead of letting URLSession downgrade it to a GET.
-private final class PostRedirectHandler: NSObject, URLSessionTaskDelegate {
-    func urlSession(
-        _ session: URLSession,
-        task: URLSessionTask,
-        willPerformHTTPRedirection response: HTTPURLResponse,
-        newRequest request: URLRequest,
-        completionHandler: @escaping (URLRequest?) -> Void
-    ) {
-        guard var reissued = task.originalRequest else {
-            completionHandler(request)
-            return
-        }
-        reissued.url = request.url
-        completionHandler(reissued)
-    }
-}

@@ -30,22 +30,32 @@ struct GoogleSheetsOrderHistoryService: OrderHistoryServiceProtocol {
             throw ServiceError.invalidURL
         }
 
+        print("[OrderHistoryService] → GET \(url)")
+
         let data: Data
         let response: URLResponse
 
         do {
             (data, response) = try await URLSession.shared.data(from: url)
         } catch {
+            print("[OrderHistoryService] ✗ Network error: \(error)")
             throw ServiceError.networkFailed(underlying: error)
         }
 
-        if let http = response as? HTTPURLResponse, http.statusCode != 200 {
-            throw ServiceError.invalidResponse(statusCode: http.statusCode)
+        if let http = response as? HTTPURLResponse {
+            print("[OrderHistoryService] ← status \(http.statusCode)")
+            if http.statusCode != 200 {
+                print("[OrderHistoryService] ✗ Non-200 body: \(String(data: data, encoding: .utf8) ?? "<binary>")")
+                throw ServiceError.invalidResponse(statusCode: http.statusCode)
+            }
         }
+
+        print("[OrderHistoryService] Raw body: \(String(data: data, encoding: .utf8) ?? "<binary>")")
 
         do {
             return try JSONDecoder().decode([CustomerOrder].self, from: data)
         } catch {
+            print("[OrderHistoryService] ✗ Decoding error: \(error)")
             throw ServiceError.decodingFailed(underlying: error)
         }
     }

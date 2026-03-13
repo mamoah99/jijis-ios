@@ -20,10 +20,10 @@ enum ServiceError: LocalizedError {
             return "The request URL is invalid."
         case .invalidResponse(let code):
             return "Unexpected server response (status \(code))."
-        case .decodingFailed:
-            return "The server returned data in an unexpected format."
-        case .networkFailed:
-            return "A network error occurred. Please check your connection."
+        case .decodingFailed(let underlying):
+            return "Decoding failed: \(underlying.localizedDescription)"
+        case .networkFailed(let underlying):
+            return "Network error: \(underlying.localizedDescription)"
         }
     }
 }

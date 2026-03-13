@@ -25,7 +25,7 @@ struct MockOrderHistoryService: OrderHistoryServiceProtocol {
                 tipAmount: 1.10,
                 total: 12.10,
                 paymentMethod: "apple_pay",
-                submittedAt: "2026-03-12T14:30:00Z",
+                createdAt: "2026-03-12T14:30:00Z",
                 items: "[{\"name\":\"Classic Salt Bread\",\"quantity\":1},{\"name\":\"S'mores Salt Bread\",\"quantity\":1}]"
             ),
             CustomerOrder(
@@ -38,7 +38,7 @@ struct MockOrderHistoryService: OrderHistoryServiceProtocol {
                 tipAmount: 0,
                 total: 6.50,
                 paymentMethod: "card",
-                submittedAt: "2026-03-11T09:15:00Z",
+                createdAt: "2026-03-11T09:15:00Z",
                 items: "[{\"name\":\"Truffle Egg Salad Salt Bread\",\"quantity\":1}]"
             )
         ]

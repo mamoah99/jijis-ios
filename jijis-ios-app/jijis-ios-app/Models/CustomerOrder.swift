@@ -14,16 +14,24 @@ import Foundation
 /// TODO: Future — add cancellationDeadline: Date for cancellation rules
 struct CustomerOrder: Decodable {
     let confirmationId: String
-    let customerName: String
-    let customerEmail: String
+    let customerName: String?   // not returned by current backend
+    let customerEmail: String?  // not returned by current backend
     let pickupDate: String
     let pickupWindow: String
-    let subtotal: Double
-    let tipAmount: Double
+    let subtotal: Double?       // not returned by current backend
+    let tipAmount: Double?      // not returned by current backend
     let total: Double
     let paymentMethod: String
-    let submittedAt: String
-    let items: String           // raw JSON string — see TODO above
+    let createdAt: String       // backend key; was submittedAt
+    let items: String?          // not returned by current backend
+
+    enum CodingKeys: String, CodingKey {
+        case confirmationId, customerName, customerEmail
+        case pickupDate, pickupWindow
+        case subtotal, tipAmount, total, paymentMethod
+        case createdAt
+        case items
+    }
 }
 
 extension CustomerOrder: Identifiable {
@@ -35,7 +43,7 @@ extension CustomerOrder {
     /// Returns something like "Classic Salt Bread + 1 more" or falls back gracefully.
     var itemSummary: String {
         guard
-            let data = items.data(using: .utf8),
+            let data = items?.data(using: .utf8),
             let parsed = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]],
             let first = parsed.first,
             let firstName = first["name"] as? String

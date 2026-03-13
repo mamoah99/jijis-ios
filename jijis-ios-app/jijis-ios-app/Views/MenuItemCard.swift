@@ -11,24 +11,33 @@ struct MenuItemCard: View {
     let item: MenuItem
 
     var body: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: 14) {
 
             // MARK: - Thumbnail
-            // TODO: Future — replace with Image(item.imageNames[0]) once assets are added
+            // Loads the first image from the asset catalog if available; warm placeholder otherwise.
             // TODO: Future — use AsyncImage for remote URLs
-            RoundedRectangle(cornerRadius: 10)
-                .fill(Color(.systemGray5))
-                .frame(width: 72, height: 72)
-                .overlay {
-                    Image(systemName: "fork.knife")
-                        .font(.title3)
-                        .foregroundStyle(.secondary)
+            Group {
+                if let first = item.imageNames.first, let uiImage = UIImage(named: first) {
+                    Image(uiImage: uiImage)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                } else {
+                    Color.brandBlush.opacity(0.6)
+                        .overlay {
+                            Image(systemName: "birthday.cake")
+                                .font(.title3)
+                                .foregroundStyle(Color.brandHotPink.opacity(0.7))
+                        }
                 }
+            }
+            .frame(width: 80, height: 80)
+            .clipShape(RoundedRectangle(cornerRadius: 12))
 
             // MARK: - Text content
             VStack(alignment: .leading, spacing: 4) {
                 Text(item.name)
                     .font(.headline)
+                    .foregroundStyle(Color.brandDarkBrown)
                     .lineLimit(2)
 
                 Text(item.description)
@@ -39,7 +48,7 @@ struct MenuItemCard: View {
                 Text(String(format: "$%.2f", item.price))
                     .font(.subheadline)
                     .fontWeight(.semibold)
-                    .foregroundStyle(Color.brown)
+                    .foregroundStyle(Color.brandOrange)
             }
 
             Spacer(minLength: 0)
@@ -48,9 +57,9 @@ struct MenuItemCard: View {
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color(.systemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 12))
-        .shadow(color: .black.opacity(0.06), radius: 4, x: 0, y: 2)
+        .background(Color.white)
+        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .shadow(color: .black.opacity(0.06), radius: 6, x: 0, y: 2)
     }
 }
 
@@ -65,4 +74,5 @@ struct MenuItemCard: View {
         allergens: ["Gluten", "Dairy"]
     ))
     .padding()
+    .background(Color.brandWarmWhite)
 }

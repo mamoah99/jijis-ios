@@ -22,23 +22,23 @@ struct MenuItemDetailView: View {
             VStack(alignment: .leading, spacing: 20) {
 
                 // MARK: - Image carousel
-                // TODO: Future — replace placeholders with Image(imageName) once assets are added
+                // Loads from the asset catalog by imageName if available; warm placeholder otherwise.
                 // TODO: Future — use AsyncImage for remote photo URLs
                 // TODO: Future — add customer-submitted photos as extra pages
                 TabView(selection: $selectedImageIndex) {
                     ForEach(item.imageNames.indices, id: \.self) { index in
-                        ImagePlaceholder()
+                        CarouselImage(name: item.imageNames[index])
                             .tag(index)
                             .onTapGesture { showingFullScreen = true }
                     }
                 }
                 .tabViewStyle(.page)
-                .frame(height: 280)
+                .frame(height: 300)
                 .clipShape(RoundedRectangle(cornerRadius: 16))
                 .padding(.horizontal)
                 .fullScreenCover(isPresented: $showingFullScreen) {
                     FullScreenImageViewer(
-                        count: item.imageNames.count,
+                        imageNames: item.imageNames,
                         startIndex: selectedImageIndex,
                         isPresented: $showingFullScreen
                     )
@@ -53,7 +53,7 @@ struct MenuItemDetailView: View {
                     Text(String(format: "$%.2f", item.price))
                         .font(.title3)
                         .fontWeight(.semibold)
-                        .foregroundStyle(Color.brown)
+                        .foregroundStyle(Color.brandOrange)
                 }
                 .padding(.horizontal)
 
@@ -76,7 +76,7 @@ struct MenuItemDetailView: View {
                         } label: {
                             Image(systemName: "minus.circle")
                                 .font(.title2)
-                                .foregroundStyle(quantity > 1 ? Color.brown : Color.gray)
+                                .foregroundStyle(quantity > 1 ? Color.brandHotPink : Color.gray)
                         }
                         .disabled(quantity <= 1)
 
@@ -89,7 +89,7 @@ struct MenuItemDetailView: View {
                         } label: {
                             Image(systemName: "plus.circle")
                                 .font(.title2)
-                                .foregroundStyle(Color.brown)
+                                .foregroundStyle(Color.brandHotPink)
                         }
                     }
                 }
@@ -127,6 +127,7 @@ struct MenuItemDetailView: View {
             }
             .padding(.top)
         }
+        .background(Color.brandWarmWhite)
         .navigationTitle(item.name)
         .navigationBarTitleDisplayMode(.inline)
         .safeAreaInset(edge: .bottom) {
@@ -144,9 +145,9 @@ struct MenuItemDetailView: View {
                     .font(.headline)
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(addedToCart ? Color.green : Color.brown)
+                    .background(addedToCart ? Color.brandOrange : Color.brandHotPink)
                     .foregroundStyle(.white)
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                    .clipShape(RoundedRectangle(cornerRadius: 16))
                     .animation(.easeInOut(duration: 0.2), value: addedToCart)
                     .padding(.horizontal)
                     .padding(.bottom, 8)
@@ -156,30 +157,40 @@ struct MenuItemDetailView: View {
     }
 }
 
-// MARK: - Image placeholder (swap for real Image() once assets are ready)
+// MARK: - Carousel image (asset or warm placeholder)
 
-private struct ImagePlaceholder: View {
+private struct CarouselImage: View {
+    let name: String
+
     var body: some View {
-        RoundedRectangle(cornerRadius: 0)
-            .fill(Color(.systemGray5))
-            .overlay {
-                Image(systemName: "photo")
-                    .font(.system(size: 48))
-                    .foregroundStyle(.secondary)
+        Group {
+            if let uiImage = UIImage(named: name) {
+                Image(uiImage: uiImage)
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .clipped()
+            } else {
+                Color.brandBlush.opacity(0.6)
+                    .overlay {
+                        Image(systemName: "birthday.cake")
+                            .font(.system(size: 48))
+                            .foregroundStyle(Color.brandHotPink.opacity(0.5))
+                    }
             }
+        }
     }
 }
 
 // MARK: - Full-screen image viewer
 
 private struct FullScreenImageViewer: View {
-    let count: Int
+    let imageNames: [String]
     let startIndex: Int
     @Binding var isPresented: Bool
     @State private var currentIndex: Int
 
-    init(count: Int, startIndex: Int, isPresented: Binding<Bool>) {
-        self.count = count
+    init(imageNames: [String], startIndex: Int, isPresented: Binding<Bool>) {
+        self.imageNames = imageNames
         self.startIndex = startIndex
         self._isPresented = isPresented
         self._currentIndex = State(initialValue: startIndex)
@@ -190,15 +201,23 @@ private struct FullScreenImageViewer: View {
             Color.black.ignoresSafeArea()
 
             TabView(selection: $currentIndex) {
-                ForEach(0..<count, id: \.self) { index in
-                    // TODO: Future — display real image with Image(imageNames[index])
-                    Color(.systemGray4)
-                        .overlay {
-                            Image(systemName: "photo")
-                                .font(.system(size: 64))
-                                .foregroundStyle(.secondary)
+                ForEach(imageNames.indices, id: \.self) { index in
+                    Group {
+                        if let uiImage = UIImage(named: imageNames[index]) {
+                            Image(uiImage: uiImage)
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                        } else {
+                            // TODO: Future — display real image with Image(imageNames[index])
+                            Color(.systemGray4)
+                                .overlay {
+                                    Image(systemName: "birthday.cake")
+                                        .font(.system(size: 64))
+                                        .foregroundStyle(.secondary)
+                                }
                         }
-                        .tag(index)
+                    }
+                    .tag(index)
                 }
             }
             .tabViewStyle(.page)

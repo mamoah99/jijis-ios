@@ -19,45 +19,78 @@ struct ContentView: View {
 
     var body: some View {
         NavigationStack(path: $path) {
-            VStack(spacing: 16) {
-                Spacer()
+            ZStack {
+                Color.brandWarmWhite.ignoresSafeArea()
 
-                Text("Jiji's Patisserie")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
+                // Decorative soft background accents
+                Circle()
+                    .fill(Color.brandBlush.opacity(0.6))
+                    .frame(width: 300)
+                    .offset(x: 130, y: -340)
+                Circle()
+                    .fill(Color.brandBlush.opacity(0.35))
+                    .frame(width: 220)
+                    .offset(x: -120, y: 300)
 
-                Text("Salt Bread Drops")
-                    .font(.title3)
-                    .foregroundStyle(.secondary)
+                VStack(spacing: 0) {
+                    Spacer()
 
-                Spacer()
+                    // Brand header
+                    VStack(spacing: 6) {
+                        Text("Jiji's")
+                            .font(.system(size: 56, weight: .bold, design: .serif))
+                            .foregroundStyle(Color.brandHotPink)
 
-                Button { path.append(HomeDestination.menu) } label: {
-                    Text("View This Week's Menu")
-                        .font(.headline)
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.brown)
-                        .foregroundStyle(.white)
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                        Text("Patisserie")
+                            .font(.system(size: 40, weight: .light, design: .serif))
+                            .foregroundStyle(Color.brandDarkBrown)
+
+                        Text("· Salt Bread Drops ·")
+                            .font(.caption)
+                            .foregroundStyle(Color.brandDarkBrown.opacity(0.5))
+                            .tracking(3)
+                            .padding(.top, 6)
+                    }
+
+                    Spacer()
+
+                    // Action buttons
+                    VStack(spacing: 12) {
+                        Button {
+                            path.append(HomeDestination.menu)
+                        } label: {
+                            Text("View This Week's Menu")
+                                .font(.headline)
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(Color.brandHotPink)
+                                .foregroundStyle(.white)
+                                .clipShape(RoundedRectangle(cornerRadius: 16))
+                        }
+
+                        Button {
+                            path.append(HomeDestination.orders)
+                        } label: {
+                            Text("View Current Orders")
+                                .font(.headline)
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(Color.brandBlush.opacity(0.35))
+                                .foregroundStyle(Color.brandDarkBrown)
+                                .clipShape(RoundedRectangle(cornerRadius: 16))
+                                .overlay {
+                                    RoundedRectangle(cornerRadius: 16)
+                                        .strokeBorder(Color.brandHotPink.opacity(0.3), lineWidth: 1.5)
+                                }
+                        }
+
+                        // TODO: Future — add "My Cart" shortcut button here
+                        // TODO: Future — add loyalty rewards / account shortcut here
+                    }
+                    .padding(.horizontal, 28)
+                    .padding(.bottom, 52)
                 }
-
-                Button { path.append(HomeDestination.orders) } label: {
-                    Text("View Current Orders")
-                        .font(.headline)
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.brown)
-                        .foregroundStyle(.white)
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
-                }
-
-                // TODO: Future — add "My Cart" shortcut button here
-                // TODO: Future — add loyalty rewards / account shortcut here
-
-                Spacer()
             }
-            .padding(.horizontal)
             .navigationDestination(for: HomeDestination.self) { destination in
                 switch destination {
                 case .menu:

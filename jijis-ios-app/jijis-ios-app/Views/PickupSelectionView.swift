@@ -48,6 +48,7 @@ struct PickupSelectionView: View {
                     VStack(alignment: .leading, spacing: 12) {
                         Text("Pickup Date")
                             .font(.headline)
+                            .foregroundStyle(Color.brandDarkBrown)
 
                         ForEach(viewModel.availableDates, id: \.self) { date in
                             SelectionRow(label: date, isSelected: selectedDate == date) {
@@ -63,6 +64,7 @@ struct PickupSelectionView: View {
                     VStack(alignment: .leading, spacing: 12) {
                         Text("Pickup Window")
                             .font(.headline)
+                            .foregroundStyle(Color.brandDarkBrown)
 
                         if let date = selectedDate {
                             ForEach(viewModel.windows(for: date)) { slot in
@@ -85,6 +87,7 @@ struct PickupSelectionView: View {
             }
             .padding()
         }
+        .background(Color.brandWarmWhite.ignoresSafeArea())
         .navigationTitle("Choose Pickup")
         .navigationBarTitleDisplayMode(.large)
         .task {
@@ -97,9 +100,9 @@ struct PickupSelectionView: View {
                         .font(.headline)
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(selectionIsComplete ? Color.brown : Color.gray)
+                        .background(selectionIsComplete ? Color.brandHotPink : Color.gray)
                         .foregroundStyle(.white)
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                        .clipShape(RoundedRectangle(cornerRadius: 16))
                         .padding(.horizontal)
                         .padding(.bottom, 8)
                 }
@@ -132,10 +135,10 @@ private struct SelectionRow: View {
                     .foregroundStyle(.primary)
                 Spacer()
                 Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                    .foregroundStyle(isSelected ? Color.brown : .secondary)
+                    .foregroundStyle(isSelected ? Color.brandHotPink : .secondary)
             }
             .padding()
-            .background(isSelected ? Color.brown.opacity(0.08) : Color(.systemGray6))
+            .background(isSelected ? Color.brandHotPink.opacity(0.08) : Color.white)
             .clipShape(RoundedRectangle(cornerRadius: 10))
         }
     }

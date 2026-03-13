@@ -21,10 +21,12 @@ struct CurrentOrdersView: View {
                     systemImage: "envelope",
                     description: Text("Place an order first and enter your email at checkout. Your orders will appear here automatically.")
                 )
+                .background(Color.brandWarmWhite)
 
             } else if viewModel.isLoading {
                 ProgressView("Loading your orders…")
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(Color.brandWarmWhite)
 
             } else if let error = viewModel.errorMessage {
                 VStack(spacing: 16) {
@@ -42,7 +44,9 @@ struct CurrentOrdersView: View {
                         }
                     }
                     .buttonStyle(.bordered)
+                    .tint(Color.brandHotPink)
                 }
+                .background(Color.brandWarmWhite)
 
             } else if viewModel.orders.isEmpty {
                 ContentUnavailableView(
@@ -50,18 +54,21 @@ struct CurrentOrdersView: View {
                     systemImage: "bag",
                     description: Text("Your upcoming and active orders will appear here once you've placed one.")
                 )
+                .background(Color.brandWarmWhite)
 
             } else {
                 List(viewModel.orders) { order in
                     OrderCard(order: order)
                         .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
                         .listRowSeparator(.hidden)
-                        .listRowBackground(Color.clear)
+                        .listRowBackground(Color.brandWarmWhite)
 
                     // TODO: Future — tap to open order detail screen
                     // TODO: Future — show cancellation option if within allowed window
                 }
                 .listStyle(.plain)
+                .scrollContentBackground(.hidden)
+                .background(Color.brandWarmWhite)
             }
         }
         .navigationTitle("Current Orders")
@@ -96,7 +103,7 @@ private struct OrderCard: View {
                     .foregroundStyle(.white)
                     .padding(.horizontal, 8)
                     .padding(.vertical, 4)
-                    .background(Color.brown)
+                    .background(Color.brandHotPink)
                     .clipShape(Capsule())
             }
 
@@ -119,13 +126,13 @@ private struct OrderCard: View {
                 Text(String(format: "$%.2f", order.total))
                     .font(.subheadline)
                     .fontWeight(.semibold)
-                    .foregroundStyle(Color.brown)
+                    .foregroundStyle(Color.brandOrange)
             }
         }
         .padding()
         .background(Color(.systemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 12))
-        .shadow(color: .black.opacity(0.06), radius: 4, x: 0, y: 2)
+        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .shadow(color: .black.opacity(0.06), radius: 6, x: 0, y: 2)
 
         // TODO: Future — show different status colors (green = ready, grey = completed)
         // TODO: Future — add authenticated account linking for richer order history

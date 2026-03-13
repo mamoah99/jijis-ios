@@ -126,7 +126,7 @@ struct OrderReviewView: View {
                             Text(option.label)
                                 .font(.subheadline).fontWeight(.medium)
                                 .frame(maxWidth: .infinity).padding(.vertical, 8)
-                                .background(selectedTip == option ? Color.brown : Color(.systemGray5))
+                                .background(selectedTip == option ? Color.brandHotPink : Color(.systemGray5))
                                 .foregroundStyle(selectedTip == option ? .white : .primary)
                                 .clipShape(RoundedRectangle(cornerRadius: 8))
                         }
@@ -156,7 +156,7 @@ struct OrderReviewView: View {
                                     Text(method.label).font(.subheadline).fontWeight(.medium)
                                 }
                                 .frame(maxWidth: .infinity).padding(.vertical, 10)
-                                .background(selectedPayment == method ? Color.brown : Color(.systemGray5))
+                                .background(selectedPayment == method ? Color.brandHotPink : Color(.systemGray5))
                                 .foregroundStyle(selectedPayment == method ? .white : .primary)
                                 .clipShape(RoundedRectangle(cornerRadius: 8))
                             }
@@ -216,7 +216,7 @@ struct OrderReviewView: View {
                 HStack {
                     Text("Total").font(.headline)
                     Spacer()
-                    Text(String(format: "$%.2f", total)).font(.headline).foregroundStyle(Color.brown)
+                    Text(String(format: "$%.2f", total)).font(.headline).foregroundStyle(Color.brandOrange)
                 }
             }
 
@@ -229,6 +229,8 @@ struct OrderReviewView: View {
                 }
             }
         }
+        .scrollContentBackground(.hidden)
+        .background(Color.brandWarmWhite)
         .navigationTitle("Review Order")
         .navigationBarTitleDisplayMode(.large)
         // Navigate to confirmation as soon as confirmation is set
@@ -277,9 +279,9 @@ struct OrderReviewView: View {
             } label: {
                 Text("Place Preorder — \(String(format: "$%.2f", total))")
                     .font(.headline).frame(maxWidth: .infinity).padding()
-                    .background(userProfile.isComplete ? Color.brown : Color.gray)
+                    .background(userProfile.isComplete ? Color.brandHotPink : Color.gray)
                     .foregroundStyle(.white)
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                    .clipShape(RoundedRectangle(cornerRadius: 16))
                     .padding(.horizontal).padding(.bottom, 8)
             }
             .disabled(!userProfile.isComplete || orderViewModel.isSubmitting)

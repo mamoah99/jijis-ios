@@ -17,11 +17,12 @@ struct OrderConfirmationView: View {
 
             Image(systemName: "checkmark.circle.fill")
                 .font(.system(size: 72))
-                .foregroundStyle(Color.brown)
+                .foregroundStyle(Color.brandHotPink)
 
             VStack(spacing: 10) {
                 Text("Thank you!")
                     .font(.largeTitle).fontWeight(.bold)
+                    .foregroundStyle(Color.brandDarkBrown)
 
                 Text("Your preorder has been placed.\nWe'll have it ready for you!")
                     .font(.body).foregroundStyle(.secondary).multilineTextAlignment(.center)
@@ -31,6 +32,7 @@ struct OrderConfirmationView: View {
             VStack(spacing: 8) {
                 Text("Order \(confirmation.confirmationId)")
                     .font(.headline)
+                    .foregroundStyle(Color.brandDarkBrown)
 
                 Text(confirmation.pickupDate)
                     .font(.subheadline).foregroundStyle(.secondary)
@@ -39,12 +41,12 @@ struct OrderConfirmationView: View {
                     .font(.subheadline).foregroundStyle(.secondary)
 
                 Text(String(format: "Total: $%.2f", confirmation.total))
-                    .font(.subheadline).fontWeight(.medium).foregroundStyle(Color.brown)
+                    .font(.subheadline).fontWeight(.semibold).foregroundStyle(Color.brandOrange)
             }
             .padding()
             .frame(maxWidth: .infinity)
-            .background(Color(.systemGray6))
-            .clipShape(RoundedRectangle(cornerRadius: 12))
+            .background(Color.brandBlush.opacity(0.4))
+            .clipShape(RoundedRectangle(cornerRadius: 16))
             .padding(.horizontal)
 
             // TODO: Future — send confirmation email triggered from here
@@ -58,13 +60,14 @@ struct OrderConfirmationView: View {
             } label: {
                 Text("Back to Main Menu")
                     .font(.headline).frame(maxWidth: .infinity).padding()
-                    .background(Color.brown).foregroundStyle(.white)
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                    .background(Color.brandHotPink).foregroundStyle(.white)
+                    .clipShape(RoundedRectangle(cornerRadius: 16))
                     .padding(.horizontal)
             }
 
             Spacer()
         }
+        .background(Color.brandWarmWhite.ignoresSafeArea())
         .navigationTitle("Order Confirmed")
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true)

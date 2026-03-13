@@ -20,12 +20,14 @@ struct MenuView: View {
             if viewModel.isLoading {
                 ProgressView("Loading menu…")
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(Color.brandWarmWhite)
             } else if let error = viewModel.errorMessage {
                 ContentUnavailableView(
                     "Menu unavailable",
                     systemImage: "exclamationmark.triangle",
                     description: Text(error)
                 )
+                .background(Color.brandWarmWhite)
             } else {
                 List(viewModel.menuItems) { item in
                     NavigationLink(destination: MenuItemDetailView(item: item)) {
@@ -33,9 +35,11 @@ struct MenuView: View {
                     }
                     .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
                     .listRowSeparator(.hidden)
-                    .listRowBackground(Color.clear)
+                    .listRowBackground(Color.brandWarmWhite)
                 }
                 .listStyle(.plain)
+                .scrollContentBackground(.hidden)
+                .background(Color.brandWarmWhite)
             }
         }
         .navigationTitle("This Week's Menu")
@@ -53,7 +57,7 @@ struct MenuView: View {
                                 .fontWeight(.bold)
                                 .foregroundStyle(.white)
                                 .padding(3)
-                                .background(Color.brown)
+                                .background(Color.brandHotPink)
                                 .clipShape(Circle())
                                 .offset(x: 8, y: -8)
                         }

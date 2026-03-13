@@ -23,11 +23,13 @@ struct CartView: View {
                         systemImage: "bag",
                         description: Text("Add items from this week's menu to get started.")
                     )
+                    .background(Color.brandWarmWhite)
                 } else {
                     List {
                         ForEach(cartViewModel.items) { cartItem in
                             CartItemRow(cartItem: cartItem)
                                 .listRowSeparator(.hidden)
+                                .listRowBackground(Color.brandWarmWhite)
                                 .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                                     Button(role: .destructive) {
                                         cartViewModel.remove(cartItem)
@@ -44,9 +46,10 @@ struct CartView: View {
                                 Spacer()
                                 Text(String(format: "$%.2f", cartViewModel.subtotal))
                                     .font(.headline)
-                                    .foregroundStyle(Color.brown)
+                                    .foregroundStyle(Color.brandOrange)
                             }
                             .padding(.vertical, 4)
+                            .listRowBackground(Color.brandWarmWhite)
                         }
 
                         // TODO: Future — show promo code entry field here
@@ -54,6 +57,8 @@ struct CartView: View {
                         // TODO: Future — show loyalty rewards balance here
                     }
                     .listStyle(.plain)
+                    .scrollContentBackground(.hidden)
+                    .background(Color.brandWarmWhite)
                 }
             }
             .navigationTitle("Your Cart")
@@ -69,9 +74,9 @@ struct CartView: View {
                             .font(.headline)
                             .frame(maxWidth: .infinity)
                             .padding()
-                            .background(Color.brown)
+                            .background(Color.brandHotPink)
                             .foregroundStyle(.white)
-                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                            .clipShape(RoundedRectangle(cornerRadius: 16))
                             .padding(.horizontal)
                             .padding(.bottom, 8)
                     }
@@ -111,7 +116,7 @@ private struct CartItemRow: View {
                 } label: {
                     Image(systemName: "minus.circle")
                         .font(.title3)
-                        .foregroundStyle(Color.brown)
+                        .foregroundStyle(Color.brandHotPink)
                 }
 
                 Text("\(cartItem.quantity)")
@@ -124,11 +129,14 @@ private struct CartItemRow: View {
                 } label: {
                     Image(systemName: "plus.circle")
                         .font(.title3)
-                        .foregroundStyle(Color.brown)
+                        .foregroundStyle(Color.brandHotPink)
                 }
             }
         }
-        .padding(.vertical, 4)
+        .padding()
+        .background(Color.white)
+        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .shadow(color: .black.opacity(0.05), radius: 5, x: 0, y: 2)
     }
 }
 
